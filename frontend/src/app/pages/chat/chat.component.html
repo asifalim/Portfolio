@@ -1,0 +1,56 @@
+<div id="chat-page" class="page active">
+  <div class="chat-header">
+    <div class="chat-avatar">🤖</div>
+    <div class="chat-header-info">
+      <h3>Alim's AI Agent</h3>
+      <p><span class="online-dot"></span> Online — Ask me anything about Alim</p>
+    </div>
+
+    <button routerLink="/"
+      style="margin-left:auto;background:transparent;border:1px solid var(--border);color:var(--muted2);padding:0.4rem 0.9rem;border-radius:8px;cursor:pointer;font-family:var(--font-body),serif;font-size:0.8rem;transition:all 0.2s;"
+      onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+      onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted2)'">← Back to Portfolio</button>
+  </div>
+
+  <div class="chat-container">
+    <div class="chat-messages" id="chatMessages">
+      <div *ngFor="let msg of messages" class="message" [ngClass]="msg.role === 'user' ? 'user' : 'ai'">
+        <div class="msg-avatar" [ngClass]="msg.role === 'user' ? 'user-av' : 'ai'">
+          {{ msg.role === 'user' ? 'You' : 'AM' }}
+        </div>
+        <div class="msg-bubble">
+          {{ msg.content }}
+        </div>
+      </div>
+      <div *ngIf="isTyping" class="message ai" id="typing">
+        <div class="msg-avatar ai">AM</div>
+        <div class="msg-bubble">
+          <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-suggestions" id="suggestions" *ngIf="messages.length === 1 && !isTyping">
+      <button *ngFor="let suggestion of suggestions" class="suggestion-chip" (click)="sendMessage(suggestion)">{{
+        suggestion }}</button>
+    </div>
+
+    <div class="chat-input-area">
+      <div class="chat-input-wrap">
+        <textarea id="chat-input" placeholder="Ask me about Alim's skills, projects, experience..." rows="1"
+          [value]="inputText" (input)="onInput($event)" (keydown)="handleChatKey($event)"></textarea>
+        <button class="send-btn" (click)="sendMessage()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

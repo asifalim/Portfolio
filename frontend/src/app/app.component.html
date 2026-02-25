@@ -1,0 +1,545 @@
+<!-- ─── NAVBAR ─── -->
+<nav id="navbar">
+  <a href="#" class="nav-logo" onclick="showPage('main')">Home</a>
+  <ul class="nav-links">
+    <li><a href="#about" onclick="showPage('main')">About</a></li>
+    <a href="#education" onclick="showPage('main');toggleMobileMenu()">Education</a>
+    <li><a href="#experience" onclick="showPage('main')">Experience</a></li>
+    <li><a href="#skills" onclick="showPage('main')">Skills</a></li>
+    <li><a href="#projects" onclick="showPage('main')">Projects</a></li>
+    <li><a href="#achievements" onclick="showPage('main')">Achievements</a></li>
+    <li><a href="#contact" onclick="showPage('main')">Contact</a></li>
+    <li>
+      <button (click)="goToChatBot()" class="back-btn">🤖 Ai Agent</button>
+    </li>
+  </ul>
+  <div class="hamburger" onclick="toggleMobileMenu()" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="showPage('main');toggleMobileMenu()">About</a>
+  <a href="#education" onclick="showPage('main');toggleMobileMenu()">Education</a>
+  <a href="#experience" onclick="showPage('main');toggleMobileMenu()">Experience</a>
+  <a href="#skills" onclick="showPage('main');toggleMobileMenu()">Skills</a>
+  <a href="#projects" onclick="showPage('main');toggleMobileMenu()">Projects</a>
+  <a href="#contact" onclick="showPage('main');toggleMobileMenu()">Contact</a>
+  <button (click)="goToChatBot()" class="back-btn">🤖 Ai Agent</button>
+</div>
+
+<!-- ─── MAIN PAGE ─── -->
+<div id="main-page" class="page" [class.active]="!isChatPage">
+
+  <!-- HERO -->
+  <section id="home" style="max-width:100%;padding:0;">
+    <div class="hero-bg">
+      <div class="hero-orb orb1"></div>
+      <div class="hero-orb orb2"></div>
+      <div class="hero-orb orb3"></div>
+    </div>
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:6rem 2rem 4rem;">
+      <div class="hero-content">
+        <div class="hero-badge">Available for opportunities</div>
+        <h1 class="hero-title">
+          Hi, I'm <span class="gradient-text">Alim</span><br>
+        </h1>
+        <p class="hero-sub">
+          I build reliable and user-focused software that turns ideas into meaningful digital experiences.
+        </p>
+        <div class="hero-ctas">
+          <a href="#projects" class="btn-primary">View My Work ↓</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-value">1.5<span>+</span></div>
+            <div class="stat-label">Years Experience</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">5<span>+</span></div>
+            <div class="stat-label">Projects Shipped</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">8<span>+</span></div>
+            <div class="stat-label">Technologies</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">1<span>+</span></div>
+            <div class="stat-label">Certifications</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-tag">About Me</div>
+    <h2 class="section-title">The human behind<br>the code</h2>
+    <div class="about-grid">
+      <div class="about-avatar-wrap">
+        <div class="about-avatar">👨‍💻</div>
+        <div class="about-float-card">
+          <div class="value">1.5y</div>
+          <div class="label">Industry Exp.</div>
+        </div>
+      </div>
+      <div class="about-text reveal-delay-1">
+        <p>Hey! I'm <strong>Alim Uddin Asif</strong>, a Software Engineer with 1.5 years of hands-on
+          industry experience building robust backend systems and modern web applications.</p>
+        <p>I graduated with a degree in Computer Science and jumped straight into the industry,
+          where I've been crafting <strong>REST APIs and full-stack
+            applications</strong> using Java, Spring Boot, Angular, and PostgreSQL.</p>
+        <p>I care deeply about <strong>code quality, performance, and developer experience</strong>.
+          When I'm not coding, I'm exploring new technologies, contributing to open-source, or
+          mentoring junior developers in my community.</p>
+        <p>My goal is to grow into a <strong>Senior Engineer</strong> and eventually a tech lead —
+          someone who not only writes excellent code but also shapes engineering culture.</p>
+        <div class="about-links">
+          <a class="icon-btn" href="https://github.com/asifalim" target="https://github.com/asifalim">⚡ GitHub</a>
+          <a class="icon-btn" href="https://www.linkedin.com/in/alim-uddin-asif/"
+            target="https://www.linkedin.com/in/alim-uddin-asif/">💼 LinkedIn</a>
+          <a class="icon-btn" href="#" target="_blank">📄 Resume</a>
+          <a class="icon-btn" href="mailto:asifalimnstu@gmail.com">✉️ Email</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="section-tag">Education</div>
+    <h2 class="section-title">Academic foundation</h2>
+    <p class="section-desc">Where it all started — building the foundation of logical thinking and
+      engineering principles.</p>
+    <div class="edu-timeline">
+      <div class="edu-item">
+        <div class="edu-year">2019 — 2024</div>
+        <div class="edu-degree">B.Sc. in Computer Science and Telecommunication Engineering</div>
+        <div class="edu-school">Noakhali Science and Technology University</div>
+        <div class="edu-desc">Focused on algorithms, data structures, design pattern, software engineering
+          principles, and database systems.
+        </div>
+        <span class="edu-badge">CGPA: 3.46 / 4.00</span>
+      </div>
+      <div class="edu-item reveal-delay-1">
+        <div class="edu-year">2016 — 2018</div>
+        <div class="edu-degree">Higher Secondary Certificate (HSC) — Science</div>
+        <div class="edu-school">Noakhali Govt. College</div>
+        <div class="edu-desc">Majored in Physics, Chemistry, and Mathematics. Developed a strong
+          analytical mindset and problem-solving foundation.
+        </div>
+        <span class="edu-badge">GPA: 4.92 / 5.00</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-tag">Experience</div>
+    <h2 class="section-title">Where I've worked</h2>
+    <p class="section-desc">Building real-world systems, solving complex problems, and growing as an
+      engineer every single day.</p>
+    <div class="exp-grid">
+      <div class="exp-card animated-border-card">
+        <div class="exp-header">
+          <div>
+            <div class="exp-role">Software Engineer</div>
+            <div class="exp-company">Brac IT Services Ltd.</div>
+          </div>
+          <span class="exp-period">Dec 2024 – Present</span>
+        </div>
+        <p class="exp-desc">Working on a SmartMF project serving 50,000+ active users. Developed
+          and maintained RESTful APIs with Spring Boot, implemented JWT-based authentication,
+          optimized PostgreSQL queries reducing load time by 40%, and built reusable Angular
+          components for the admin dashboard. Actively participated in daily standups, sprint
+          planning, and code reviews.</p>
+        <div class="exp-tags">
+          <span class="tag">Spring Boot</span>
+          <span class="tag">Angular</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">JWT</span>
+          <span class="tag">REST API</span>
+          <span class="tag">Docker</span>
+          <span class="tag">Git</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-tag">Skills & Technologies</div>
+    <h2 class="section-title">My technical toolkit</h2>
+    <p class="section-desc">Tools, languages, and frameworks I've worked with in production and
+      personal projects.</p>
+    <div class="skills-grid">
+      <div class="skill-category animated-border-card">
+        <div class="skill-cat-title"><span class="skill-cat-icon">⚙️</span> Backend</div>
+        <div class="skill-pills">
+          <span class="skill-pill">Java</span>
+          <span class="skill-pill">Spring Boot</span>
+          <span class="skill-pill">Spring Security</span>
+          <span class="skill-pill">Hibernate / JPA</span>
+          <span class="skill-pill">Gradle</span>
+          <span class="skill-pill">REST API</span>
+        </div>
+      </div>
+      <div class="skill-category animated-border-card reveal-delay-1">
+        <div class="skill-cat-title"><span class="skill-cat-icon">🎨</span> Frontend</div>
+        <div class="skill-pills">
+          <span class="skill-pill">Angular</span>
+          <span class="skill-pill">TypeScript</span>
+          <span class="skill-pill">HTML5 / CSS3</span>
+          <span class="skill-pill">Angular Material</span>
+          <span class="skill-pill">Bootstrap</span>
+          <span class="skill-pill">Tailwind CSS</span>
+        </div>
+      </div>
+      <div class="skill-category animated-border-card reveal-delay-2">
+        <div class="skill-cat-title"><span class="skill-cat-icon">🗄️</span> Database</div>
+        <div class="skill-pills">
+          <span class="skill-pill">PostgreSQL</span>
+          <span class="skill-pill">MySQL</span>
+          <span class="skill-pill">Redis</span>
+          <span class="skill-pill">Flyway Migrations</span>
+          <span class="skill-pill">Query Optimization</span>
+        </div>
+      </div>
+      <div class="skill-category animated-border-card">
+        <div class="skill-cat-title"><span class="skill-cat-icon">🚀</span> DevOps & Tools</div>
+        <div class="skill-pills">
+          <span class="skill-pill">Docker</span>
+          <span class="skill-pill">Git / GitHub</span>
+          <span class="skill-pill">CI/CD (GitHub Actions)</span>
+          <span class="skill-pill">Postman</span>
+          <span class="skill-pill">Swagger / OpenAPI</span>
+          <span class="skill-pill">Linux</span>
+        </div>
+      </div>
+      <div class="skill-category animated-border-card reveal-delay-1">
+        <div class="skill-cat-title"><span class="skill-cat-icon">🧪</span> Testing</div>
+        <div class="skill-pills">
+          <span class="skill-pill">JUnit 5</span>
+          <span class="skill-pill">Mockito</span>
+          <span class="skill-pill">Integration Testing</span>
+          <span class="skill-pill">TDD</span>
+          <span class="skill-pill">Jasmine</span>
+        </div>
+      </div>
+      <div class="skill-category animated-border-card reveal-delay-2">
+        <div class="skill-cat-title"><span class="skill-cat-icon">💡</span> Concepts</div>
+        <div class="skill-pills">
+          <span class="skill-pill">OOP & SOLID</span>
+          <span class="skill-pill">Design Patterns</span>
+          <span class="skill-pill">Agile / Scrum</span>
+          <span class="skill-pill">System Design</span>
+          <span class="skill-pill">Clean Architecture</span>
+          <span class="skill-pill">Data Structures</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-tag">Projects</div>
+    <h2 class="section-title">Things I've built</h2>
+    <p class="section-desc">A mix of production-grade and personal projects that showcase my
+      technical range and problem-solving approach.</p>
+    <div class="projects-grid">
+      <div class="project-card animated-border-card">
+        <div class="project-icon">🛒</div>
+        <div class="project-title">ShopStream — E-commerce Platform</div>
+        <p class="project-desc">A full-featured B2C e-commerce platform with product catalog, cart
+          management, order processing, payment gateway integration (Stripe), and an admin dashboard
+          for inventory management.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Spring Boot</span>
+          <span class="stack-tag">Angular</span>
+          <span class="stack-tag">PostgreSQL</span>
+          <span class="stack-tag">Redis</span>
+          <span class="stack-tag">Docker</span>
+          <span class="stack-tag">Stripe API</span>
+        </div>
+        <div class="project-links">
+          <a href="#" class="project-link">↗ Live Demo</a>
+          <a href="#" class="project-link">⚡ GitHub</a>
+        </div>
+      </div>
+      <div class="project-card animated-border-card reveal-delay-1">
+        <div class="project-icon">📋</div>
+        <div class="project-title">Employee Management</div>
+        <p class="project-desc">A Trello-inspired project management application with drag-and-drop
+          kanban boards, real-time collaboration via WebSockets, role-based access control, and team
+          analytics dashboard.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Spring Boot</span>
+          <span class="stack-tag">Angular</span>
+          <span class="stack-tag">WebSocket</span>
+          <span class="stack-tag">JWT</span>
+          <span class="stack-tag">PostgreSQL</span>
+        </div>
+        <div class="project-links">
+          <a href="#" class="project-link">↗ Live Demo</a>
+          <a href="#" class="project-link">⚡ GitHub</a>
+        </div>
+      </div>
+      <div class="project-card animated-border-card reveal-delay-2">
+        <div class="project-icon">🤖</div>
+        <div class="project-title">AI Portfolio Chatbot</div>
+        <p class="project-desc">A personal AI agent chatbot integrated into this portfolio. Built a
+          Spring Boot backend that proxies requests to the Claude API, returning contextual,
+          personality-driven responses about my background and skills.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Spring Boot</span>
+          <span class="stack-tag">Claude API</span>
+          <span class="stack-tag">Angular</span>
+          <span class="stack-tag">REST API</span>
+          <span class="stack-tag">Gradle</span>
+        </div>
+        <div class="project-links">
+          <a href="#" onclick="showPage('chat');return false;" class="project-link">↗ Try It</a>
+          <a href="#" class="project-link">⚡ GitHub</a>
+        </div>
+      </div>
+      <div class="project-card animated-border-card">
+        <div class="project-icon">📊</div>
+        <div class="project-title">Income & Expense Tracker</div>
+        <p class="project-desc">A personal finance tracking app with expense categorization, monthly
+          budget goals, visual analytics using Chart.js, CSV import/export, and intelligent spending
+          insights.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Spring Boot</span>
+          <span class="stack-tag">Angular</span>
+          <span class="stack-tag">Chart.js</span>
+          <span class="stack-tag">MySQL</span>
+          <span class="stack-tag">Gradle</span>
+        </div>
+        <div class="project-links">
+          <a href="#" class="project-link">↗ Live Demo</a>
+          <a href="#" class="project-link">⚡ GitHub</a>
+        </div>
+      </div>
+      <div class="project-card animated-border-card reveal-delay-1">
+        <div class="project-icon">📚</div>
+        <div class="project-title">Exam Management System</div>
+        <p class="project-desc">A standalone authentication microservice supporting JWT, OAuth2
+          (Google/GitHub), refresh token rotation, rate limiting, and multi-factor authentication —
+          designed to plug into any backend.</p>
+        <div class="project-stack">
+          <span class="stack-tag">Spring Security</span>
+          <span class="stack-tag">OAuth2</span>
+          <span class="stack-tag">JWT</span>
+          <span class="stack-tag">Redis</span>
+          <span class="stack-tag">PostgreSQL</span>
+        </div>
+        <div class="project-links">
+          <a href="#" class="project-link">⚡ GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ACHIEVEMENTS -->
+  <section id="achievements">
+    <div class="section-tag">Achievements & Certifications</div>
+    <h2 class="section-title">Recognition & credentials</h2>
+    <p class="section-desc">Continuous learning is core to who I am as an engineer.</p>
+    <div class="achievements-grid">
+      <div class="achievement-card animated-border-card">
+        <div class="achievement-icon">🌍</div>
+        <div>
+          <div class="achievement-title">2652nd place (Round 1) - Meta Hacker Cup (ICPC)</div>
+          <div class="achievement-org">Meta<span class="achievement-date"> (Mar 2022)</span></div>
+          <div class="achievement-title">150th Place (Round 2) — Code Contest (IUPC)</div>
+          <div class="achievement-org">Samsung<span class="achievement-date"> (Mar 2022)</span></div>
+          <div class="achievement-title">Honorable Mention: <span class="achievement-org">ICPC (2021, 2022), NCPC
+              (2023)</span></div>
+        </div>
+      </div>
+      <div class="achievement-card animated-border-card reveal-delay-1">
+        <div class="achievement-icon">🎯</div>
+        <div>
+          <div class="achievement-title">19th place - IUPC</div>
+          <div class="achievement-org">CUET CSE Fest<span class="achievement-date"> (Mar 2022)</span></div>
+          <div class="achievement-title">29th place - IUPC</div>
+          <div class="achievement-org">IIUC<span class="achievement-date"> (Mar 2022)</span></div>
+          <div class="achievement-title">43rd place - IUPC</div>
+          <div class="achievement-org">CoU<span class="achievement-date"> (Mar 2022)</span></div>
+
+        </div>
+      </div>
+      <div class="achievement-card animated-border-card reveal-delay-2">
+        <div class="achievement-icon">🏆</div>
+        <div>
+          <div class="achievement-title">1st Place - IUPC</div>
+          <div class="achievement-org">NSTU EEE Day<span class="achievement-date"> (Mar 2022)</span></div>
+          <div class="achievement-title">4th Place - IUPC</div>
+          <div class="achievement-org">NSTU<span class="achievement-date"> (Mar 2022)</span></div>
+          <div class="achievement-title">7th Place - IUPC</div>
+          <div class="achievement-org">NSTU Science Fest<span class="achievement-date"> (Mar 2022)</span></div>
+        </div>
+      </div>
+
+      <div class="achievement-card animated-border-card">
+        <div class="achievement-icon">💻</div>
+        <div>
+          <div class="achievement-title">Pupil (max-rating: 1380)</div>
+          <div class="achievement-org">Codeforces</div>
+          <div class="achievement-title">4* (max-rating: 1808)</div>
+          <div class="achievement-org">Codechef</div>
+          <div class="achievement-title">Advanced (max-rating: 1626)</div>
+          <div class="achievement-org">Leetcode</div>
+        </div>
+      </div>
+      <div class="achievement-card animated-border-card reveal-delay-1">
+        <div class="achievement-icon">📊</div>
+        <div>
+          <div class="achievement-title">Problem Solve Count: 4200+</div>
+          <div class="achievement-org">
+            Codeforces, Codechef, Leetcode
+          </div>
+          <div class="achievement-org">
+            Toph, CSES, etc.
+          </div>
+          <div class="achievement-title">Contest Participation: 380+</div>
+          <div class="achievement-org">
+            IUPC, NCPC, ICPC
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-tag">Contact</div>
+    <h2 class="section-title">Let's work together</h2>
+    <div class="contact-wrapper">
+      <div class="contact-info">
+        <h3>Get in touch</h3>
+        <p>Whether you have a job opportunity, a project idea, or just want to connect — my inbox is
+          always open. I'll get back to you within 24 hours.</p>
+        <div class="contact-items">
+          <a class="contact-item" href="mailto:alex@example.com">
+            <div class="contact-item-icon">✉️</div>
+            asifalimnstu@gmail.com
+          </a>
+          <a class="contact-item" href="tel:+8801700000000">
+            <div class="contact-item-icon">📱</div>
+            +880 1332812998
+          </a>
+          <a class="contact-item" href="https://www.linkedin.com/in/alim-uddin-asif/" target="_blank">
+            <div class="contact-item-icon">💼</div>
+            linkedin.com/in/alim
+          </a>
+          <a class="contact-item" href="#" target="_blank">
+            <div class="contact-item-icon">⚡</div>
+            github.com/asifalim
+          </a>
+        </div>
+      </div>
+      <form class="contact-form reveal-delay-1" onsubmit="handleContact(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" placeholder="Fardinul Haque" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" placeholder="ritan@example.com" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" placeholder="Job opportunity / Project idea">
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea rows="5" placeholder="Tell me about your project or opportunity..." required></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">Send
+          Message ✉️
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <p>Designed & built by <a href="#">Asif Alim</a> · 2026 · All rights reserved</p>
+    <p style="margin-top:0.5rem;font-size:0.78rem;">Built with Angular + Spring Boot +
+      PostgresSQL</p>
+  </footer>
+
+</div><!-- end main-page -->
+
+
+<script>
+  // ─── PAGE ROUTING ───
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    if (page === 'chat') {
+      document.getElementById('chat-page').classList.add('active');
+      window.scrollTo(0, 0);
+    } else {
+      document.getElementById('main-page').classList.add('active');
+    }
+  }
+
+  // ─── MOBILE MENU ───
+  function toggleMobileMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  // ─── SCROLL ANIMATIONS ───
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ─── SMOOTH SCROLL FOR HASH LINKS ───
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const href = a.getAttribute('href');
+      if (href && href !== '#' && document.querySelector(href)) {
+        e.preventDefault();
+        document.querySelector(href).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ─── CONTACT FORM ───
+  function handleContact(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.textContent = '✅ Message Sent!';
+    btn.style.background = 'var(--accent)';
+    setTimeout(() => {
+      btn.textContent = 'Send Message ✉️';
+      btn.style.background = '';
+      e.target.reset();
+    }, 3000);
+  }
+
+</script>
+<router-outlet></router-outlet>
