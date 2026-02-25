@@ -11,5 +11,5 @@ WORKDIR /app
 RUN addgroup -S spring && adduser -S spring -G spring
 COPY --from=builder /app/build/libs/*.jar app.jar
 USER spring:spring
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Render dynamically assigns the port and passes it as the PORT environment variable.
+ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT:-8080} -jar app.jar"]
