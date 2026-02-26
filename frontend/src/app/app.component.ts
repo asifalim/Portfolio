@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, NavigationEnd } from "@angular/router";
 
 @Component({
@@ -6,7 +6,7 @@ import { Router, NavigationEnd } from "@angular/router";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent {
   title = 'portfolio-frontend';
   isChatPage = false;
   isMobileMenuOpen = false;
@@ -18,61 +18,35 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.isChatPage = url.includes('/chat');
         // Close mobile menu on navigation
         this.isMobileMenuOpen = false;
+
+        // Handle scrolling for section paths
+        const section = url.split('/').pop();
+        if (section && section !== 'chat' && section !== '') {
+          setTimeout(() => this.scrollToSection(section), 100);
+        } else if (section === '' || !section) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       }
     });
   }
 
-  ngOnInit(): void {
-    console.log('hi ngOnInit');
-  }
+  private scrollToSection(sectionId: string) {
+    const el = document.getElementById(sectionId);
+    if (el) {
+      const offset = 64; // Navbar height
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = el.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
 
-  ngAfterViewInit(): void {
-    // ─── SCROLL ANIMATIONS ───
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-        }
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
       });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // ─── SMOOTH SCROLL FOR HASH LINKS ───
-    // This can also be done via CSS: html { scroll-behavior: smooth; }
-  }
-
-  handleContact(e: Event) {
-    e.preventDefault();
-    const target = e.target as HTMLFormElement;
-    const btn = target.querySelector('button');
-    if (btn) {
-      const originalText = btn.textContent;
-      btn.textContent = '✅ Message Sent!';
-      btn.style.background = 'var(--accent)';
-      setTimeout(() => {
-        btn.textContent = originalText;
-        btn.style.background = '';
-        target.reset();
-      }, 3000);
     }
   }
+
   toggleMobileMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
-  }
-
-  goToChatBot() {
-    this.router.navigateByUrl('/chat');
-  }
-
-  showPage(page: string) {
-    if (page === 'main') {
-      this.router.navigateByUrl('/');
-      this.isMobileMenuOpen = false;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else if (page === 'chat') {
-      this.router.navigateByUrl('/chat');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
   }
 }
