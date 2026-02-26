@@ -17,6 +17,12 @@
   color: var(--accent);
 }
 
+// Mobile alignment fix
+.mobile-menu .back-btn {
+  margin-left: 0;
+  width: fit-content;
+}
+
 // ─── REUSABLE ANIMATED BORDER CARD ───
 .animated-border-card {
   position: relative;

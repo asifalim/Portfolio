@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Router } from "@angular/router";
+import { Router, NavigationEnd } from "@angular/router";
 
 @Component({
   selector: 'app-root',
@@ -13,8 +13,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
-      if (event.constructor.name === 'NavigationEnd') {
-        // @ts-ignore
+      if (event instanceof NavigationEnd) {
         const url = event.urlAfterRedirects || event.url;
         this.isChatPage = url.includes('/chat');
         // Close mobile menu on navigation
