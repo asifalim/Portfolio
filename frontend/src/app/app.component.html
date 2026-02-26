@@ -1,31 +1,31 @@
 <!-- ─── NAVBAR ─── -->
 <nav id="navbar">
-  <a href="#" class="nav-logo" onclick="showPage('main')">Home</a>
+  <a (click)="showPage('main')" class="nav-logo" style="cursor: pointer;">Home</a>
   <ul class="nav-links">
-    <li><a href="#about" onclick="showPage('main')">About</a></li>
-    <a href="#education" onclick="showPage('main');toggleMobileMenu()">Education</a>
-    <li><a href="#experience" onclick="showPage('main')">Experience</a></li>
-    <li><a href="#skills" onclick="showPage('main')">Skills</a></li>
-    <li><a href="#projects" onclick="showPage('main')">Projects</a></li>
-    <li><a href="#achievements" onclick="showPage('main')">Achievements</a></li>
-    <li><a href="#contact" onclick="showPage('main')">Contact</a></li>
+    <li><a href="#about" (click)="showPage('main')">About</a></li>
+    <li><a href="#education" (click)="showPage('main')">Education</a></li>
+    <li><a href="#experience" (click)="showPage('main')">Experience</a></li>
+    <li><a href="#skills" (click)="showPage('main')">Skills</a></li>
+    <li><a href="#projects" (click)="showPage('main')">Projects</a></li>
+    <li><a href="#achievements" (click)="showPage('main')">Achievements</a></li>
+    <li><a href="#contact" (click)="showPage('main')">Contact</a></li>
     <li>
       <button (click)="goToChatBot()" class="back-btn">🤖 Ai Agent</button>
     </li>
   </ul>
-  <div class="hamburger" onclick="toggleMobileMenu()" id="hamburger">
+  <div class="hamburger" (click)="toggleMobileMenu()" id="hamburger" [class.active]="isMobileMenuOpen">
     <span></span><span></span><span></span>
   </div>
 </nav>
 
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#about" onclick="showPage('main');toggleMobileMenu()">About</a>
-  <a href="#education" onclick="showPage('main');toggleMobileMenu()">Education</a>
-  <a href="#experience" onclick="showPage('main');toggleMobileMenu()">Experience</a>
-  <a href="#skills" onclick="showPage('main');toggleMobileMenu()">Skills</a>
-  <a href="#projects" onclick="showPage('main');toggleMobileMenu()">Projects</a>
-  <a href="#contact" onclick="showPage('main');toggleMobileMenu()">Contact</a>
-  <button (click)="goToChatBot()" class="back-btn">🤖 Ai Agent</button>
+<div class="mobile-menu" id="mobileMenu" [class.open]="isMobileMenuOpen">
+  <a href="#about" (click)="showPage('main'); toggleMobileMenu()">About</a>
+  <a href="#education" (click)="showPage('main'); toggleMobileMenu()">Education</a>
+  <a href="#experience" (click)="showPage('main'); toggleMobileMenu()">Experience</a>
+  <a href="#skills" (click)="showPage('main'); toggleMobileMenu()">Skills</a>
+  <a href="#projects" (click)="showPage('main'); toggleMobileMenu()">Projects</a>
+  <a href="#contact" (click)="showPage('main'); toggleMobileMenu()">Contact</a>
+  <button (click)="goToChatBot(); toggleMobileMenu()" class="back-btn">🤖 Ai Agent</button>
 </div>
 
 <!-- ─── MAIN PAGE ─── -->
@@ -454,7 +454,7 @@
           </a>
         </div>
       </div>
-      <form class="contact-form reveal-delay-1" onsubmit="handleContact(event)">
+      <form class="contact-form reveal-delay-1" (submit)="handleContact($event)">
         <div class="form-row">
           <div class="form-group">
             <label>Name</label>
@@ -488,58 +488,4 @@
 
 </div><!-- end main-page -->
 
-
-<script>
-  // ─── PAGE ROUTING ───
-  function showPage(page) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    if (page === 'chat') {
-      document.getElementById('chat-page').classList.add('active');
-      window.scrollTo(0, 0);
-    } else {
-      document.getElementById('main-page').classList.add('active');
-    }
-  }
-
-  // ─── MOBILE MENU ───
-  function toggleMobileMenu() {
-    document.getElementById('mobileMenu').classList.toggle('open');
-  }
-
-  // ─── SCROLL ANIMATIONS ───
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // ─── SMOOTH SCROLL FOR HASH LINKS ───
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const href = a.getAttribute('href');
-      if (href && href !== '#' && document.querySelector(href)) {
-        e.preventDefault();
-        document.querySelector(href).scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-  });
-
-  // ─── CONTACT FORM ───
-  function handleContact(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    btn.textContent = '✅ Message Sent!';
-    btn.style.background = 'var(--accent)';
-    setTimeout(() => {
-      btn.textContent = 'Send Message ✉️';
-      btn.style.background = '';
-      e.target.reset();
-    }, 3000);
-  }
-
-</script>
 <router-outlet></router-outlet>
