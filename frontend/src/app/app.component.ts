@@ -68,8 +68,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   showPage(page: string) {
     if (page === 'main') {
       this.router.navigateByUrl('/');
+      this.isMobileMenuOpen = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (page === 'chat') {
       this.router.navigateByUrl('/chat');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 }
