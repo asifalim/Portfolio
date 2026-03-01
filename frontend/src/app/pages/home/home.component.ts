@@ -1,4 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
+import {ContactRequest, ContactService} from "../../core/services/contact.service";
 
 @Component({
     selector: 'app-home',
@@ -7,7 +8,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit, AfterViewInit {
 
-    constructor() { }
+    constructor(private contactService: ContactService) { }
 
     ngOnInit(): void {
     }
@@ -29,15 +30,40 @@ export class HomeComponent implements OnInit, AfterViewInit {
         e.preventDefault();
         const target = e.target as HTMLFormElement;
         const btn = target.querySelector('button');
-        if (btn) {
-            const originalText = btn.textContent;
-            btn.textContent = '✅ Message Sent!';
-            btn.style.background = 'var(--accent)';
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = '';
-                target.reset();
-            }, 3000);
+        if(!btn)return;
+      const originalText = btn.textContent;
+      const formData = new FormData(target);
+      const request: ContactRequest = {
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        subject: formData.get('subject') as string,
+        message: formData.get('message') as string
+      };
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      this.contactService.sendMessage(request).subscribe({
+        next: () => {
+          btn.textContent = '✅ Message Sent!';
+          btn.style.background = 'var(--accent)';
+
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+            btn.disabled = false;
+            target.reset();
+          }, 3000);
+        },
+        error: () => {
+          btn.textContent = '❌ Failed. Try Again';
+          btn.style.background = 'red';
+
+          setTimeout(() => {
+            btn.textContent = originalText;
+            btn.style.background = '';
+            btn.disabled = false;
+          }, 3000);
         }
+      });
     }
 }
