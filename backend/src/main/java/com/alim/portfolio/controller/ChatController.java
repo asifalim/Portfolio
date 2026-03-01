@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/chat")
 @CrossOrigin(origins = "http://localhost:4202")
 @RequiredArgsConstructor
-@Tag(name = "AI Chat", description = "Alex's AI Agent chatbot powered by Claude")
+@Tag(name = "AI Chat", description = "Alim's AI Agent chatbot")
 public class ChatController {
 
     private final ChatService chatService;
 
     @PostMapping
-    @Operation(summary = "Send a message to Alex's AI Agent",
-               description = "Returns a personality-driven response about Alex's background, skills, and experience")
+    @Operation(summary = "Send a message to Alim's AI Agent",
+               description = "Returns a personality-driven response about Alim's background, skills, and experience")
     public OllamaResponse chat(@Valid @RequestBody ChatRequest request) {
         log.debug("Chat request received: {}", request.getMessage());
       return chatService.chat(request);

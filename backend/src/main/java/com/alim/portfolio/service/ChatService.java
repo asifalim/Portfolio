@@ -1,7 +1,6 @@
 package com.alim.portfolio.service;
 
 import com.alim.portfolio.dto.ChatRequest;
-import com.alim.portfolio.dto.OllamaRequest;
 import com.alim.portfolio.dto.OllamaResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,16 +20,16 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ChatService {
 
-  @Value("${anthropic.api.key}")
-  private String apiKey;
+  @Value("${api.key}")
+  private String GROQ_API_KEY;
 
-  @Value("${anthropic.api.url}")
+  @Value("${api.url}")
   private String apiUrl;
 
-  @Value("${anthropic.api.model}")
+  @Value("${api.model}")
   private String model;
 
-  @Value("${anthropic.api.max-tokens}")
+  @Value("${api.max-tokens}")
   private int maxTokens;
 
   private final RestTemplate restTemplate = new RestTemplate();
@@ -43,9 +41,14 @@ Keep answers concise (2–4 sentences unless deeper explanation is required).
 
 == Professional Summary ==
 Software Engineer at Brac IT Services (Dec 2024–Present).
-B.Sc. in CSE (CGPA 3.46/4.0, 2024 graduate).
+office location Nafi Tower, Gulshan 1, Dhaka 1212
 
-Backend-focused full-stack developer.
+== Educational Summary ==
+B.Sc. in CSE (CGPA 3.46/4.0, 2024 graduate) from Noakhali Science and Technology University.
+HSC in Science (GPA 4.92/5.00, 2018) from Noakhali Govt. College
+SSC in Science (GPA 4.89/5.00, 2016) from Noannai Union High School
+JSC (4.88/5.00, 2013) from Al Farooq Academy School and College
+PSC (1st division, 2010) from Begum Saleha Jamal Ideal Kinder Garten
 
 == Core Skills ==
 Java, Spring Boot, Spring Security, Hibernate/JPA
@@ -56,96 +59,87 @@ JUnit, Mockito
 Strong in OOP, SOLID, Clean Architecture, System Design
 
 == Notable Work ==
-Built scalable REST APIs for SmartMF (50k+ users).
+Built scalable REST APIs for SmartMF (5000k+ users), agmai (100k+ users).
 Optimized PostgreSQL queries (40% faster load time).
-Developed Angular admin dashboards.
+Developed BitsHrPayroll for employee management.
+Backend-focused full-stack developer.
 
 == Highlights ==
-Competitive programmer (ICPC, Meta Hacker Cup).
+Competitive programmer (ICPC, IUCP, NCPC, Online Contest i.e codeforces, codechef, leetcode etc., Meta Hacker Cup, Samsung etc).
 4200+ solved problems.
-Codeforces Pupil, CodeChef 4*.
+pupil at codeforces, 4* at codechef, advance at leetcode.
+
+== Personal Life ==
+No girlfriend, but looking for someone to get married to
+hobby playing cricket
+26 years old, height 5.5 inches, weight 62 kg
+Address Mohakhali TV Gate
 
 == Strict Rules ==
-- Answer ONLY what is asked.
-- Do NOT summarize full profile unless requested.
-- Do NOT list all achievements unless asked.
-- Keep responses short and specific.
-- If asked about salary, say you prefer discussing it directly.
-- If unsure, say so naturally.
+Answer ONLY what is asked.
+Do NOT summarize full profile unless requested.
+Do NOT list all achievements unless asked.
+Keep responses short and specific.
+If asked about salary, say you prefer discussing it directly.
+If unsure, say so naturally.
+Do not invent information.
+If information is not provided, say you do not have the right to share this information.
 """;
 
   public OllamaResponse chat(ChatRequest request) {
     try {
-        String fullPrompt = """
-%s
-
-User Question:
-%s
-
-Answer concisely:
-""".formatted(SYSTEM_PROMPT, request.getMessage());
-
-        OllamaRequest requestBody =
-            new OllamaRequest(model, fullPrompt, false);
-
-        requestBody.setOptions(Map.of(
-            "num_predict", 100,   //prevents long essays
-            "temperature", 0.6,      //controlled but natural
-            "top_p", 0.9,           //avoids repeating profile
-            "repeat_penalty", 1.1      //smooth generation
-        ));
 
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_JSON);
+      headers.setBearerAuth(GROQ_API_KEY);
 
-      HttpEntity<OllamaRequest> entity =
-          new HttpEntity<>(requestBody, headers);
+      Map<String, Object> body = Map.of(
+          "model", model,
+          "messages", List.of(
+              Map.of("role", "system", "content", SYSTEM_PROMPT),
+              Map.of("role", "user", "content", request.getMessage())
+          ),
+          "temperature", 0.6,
+          "max_tokens", maxTokens
+      );
 
-      ResponseEntity<OllamaResponse> response =
+      HttpEntity<Map<String, Object>> entity =
+          new HttpEntity<>(body, headers);
+
+      ResponseEntity<Map> response =
           restTemplate.postForEntity(
               apiUrl,
               entity,
-              OllamaResponse.class
+              Map.class
           );
 
-      assert response.getBody() != null;
-      return response.getBody();
+      // Extract assistant message from Groq response
+      Map<String, Object> responseBody = response.getBody();
+      List<Map<String, Object>> choices =
+          (List<Map<String, Object>>) responseBody.get("choices");
 
-    } catch (Exception e) {
-      log.error("Error calling Claude API: {}", e.getMessage());
+      Map<String, Object> message =
+          (Map<String, Object>) choices.get(0).get("message");
+
+      String content = (String) message.get("content");
+
+      // Convert to your existing OllamaResponse format
       OllamaResponse ollamaResponse = new OllamaResponse();
-      ollamaResponse.setResponse(
-          "I'm having trouble connecting right now. Please try again in a moment!");
+      ollamaResponse.setResponse(content);
       ollamaResponse.setDone(true);
+
       return ollamaResponse;
-    }
-  }
 
-  private List<Map<String, String>> buildMessages(ChatRequest request) {
-    List<Map<String, String>> messages = new ArrayList<>();
-
-    // Add conversation history
-    if (request.getHistory() != null) {
-      messages.addAll(request.getHistory().stream()
-          .map(h -> Map.of("role", h.getRole(), "content", h.getContent()))
-          .toList());
-    }
-
-    // Add current user message
-    messages.add(Map.of("role", "user", "content", request.getMessage()));
-    return messages;
-  }
-
-  @SuppressWarnings("unchecked")
-  private String extractReply(Map response) {
-    try {
-      List<Map<String, Object>> content = (List<Map<String, Object>>) response.get("content");
-      if (content != null && !content.isEmpty()) {
-        return (String) content.get(0).get("text");
-      }
     } catch (Exception e) {
-      log.error("Error extracting reply: {}", e.getMessage());
+      log.error("Error calling Groq API: {}", e.getMessage());
+
+      OllamaResponse errorResponse = new OllamaResponse();
+      errorResponse.setResponse(
+          "I'm having trouble connecting right now. Please try again in a moment!"
+      );
+      errorResponse.setDone(true);
+
+      return errorResponse;
     }
-    return "I couldn't process that response. Please try again!";
   }
 }

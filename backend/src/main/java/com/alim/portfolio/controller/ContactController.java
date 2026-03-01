@@ -28,7 +28,7 @@ public class ContactController {
         contactService.processContactMessage(request);
         return ResponseEntity.ok(Map.of(
                 "status", "success",
-                "message", "Your message has been received! Alex will get back to you within 24 hours."
+                "message", "Your message has been received! Alim will get back to you within 24 hours."
         ));
     }
 }

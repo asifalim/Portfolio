@@ -12,4 +12,4 @@ RUN addgroup -S spring && adduser -S spring -G spring
 COPY --from=builder /app/build/libs/*[!plain].jar app.jar
 USER spring:spring
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT}"]
