@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "build": "NODE_OPTIONS=--openssl-legacy-provider npm run build --prefix frontend"
+  },
   "dependencies": {
     "@angular/animations": "^21.1.4",
     "@angular/cdk": "^21.1.4",
