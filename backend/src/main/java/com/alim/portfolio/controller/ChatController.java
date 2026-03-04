@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/chat")
-@CrossOrigin(origins = "http://localhost:4202")
 @RequiredArgsConstructor
 @Tag(name = "AI Chat", description = "Alim's AI Agent chatbot")
 public class ChatController {
