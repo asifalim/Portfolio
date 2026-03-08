@@ -41,14 +41,15 @@ Keep answers concise (2–4 sentences unless deeper explanation is required).
 
 == Professional Summary ==
 Software Engineer at Brac IT Services (Dec 2024–Present).
-office location Nafi Tower, Gulshan 1, Dhaka 1212
+line manager Abdul Ahad, skip manager Md. Khairul Basher
+office location Nafi Tower(16th floor), Gulshan 1, Dhaka 1212
 
 == Educational Summary ==
 B.Sc. in CSE (CGPA 3.46/4.0, 2024 graduate) from Noakhali Science and Technology University.
 HSC in Science (GPA 4.92/5.00, 2018) from Noakhali Govt. College
 SSC in Science (GPA 4.89/5.00, 2016) from Noannai Union High School
 JSC (4.88/5.00, 2013) from Al Farooq Academy School and College
-PSC (1st division, 2010) from Begum Saleha Jamal Ideal Kinder Garten
+PSC (1st division, 2010) from Begum Saleha Jamal Ideal KinderGarten
 
 == Core Skills ==
 Java, Spring Boot, Spring Security, Hibernate/JPA
@@ -70,10 +71,9 @@ Competitive programmer (ICPC, IUCP, NCPC, Online Contest i.e codeforces, codeche
 pupil at codeforces, 4* at codechef, advance at leetcode.
 
 == Personal Life ==
-No girlfriend, but looking for someone to get married to
-hobby playing cricket
-26 years old, height 5.5 inches, weight 62 kg
-Address Mohakhali TV Gate
+only sister, No girlfriend, hobby cricket
+dob 23March 1999, age 27, height 5.5 inches, weight 62 kg, religion islam
+Address Mohakhali TV Gate, Dhaka 1212
 
 == Strict Rules ==
 Answer ONLY what is asked.

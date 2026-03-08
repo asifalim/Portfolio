@@ -3,11 +3,17 @@ package com.alim.portfolio.service;
 import com.alim.portfolio.dto.ContactRequest;
 import com.alim.portfolio.model.ContactMessage;
 import com.alim.portfolio.repository.ContactMessageRepository;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -16,10 +22,13 @@ import org.springframework.stereotype.Service;
 public class ContactService {
 
     private final ContactMessageRepository contactMessageRepository;
-    private final JavaMailSender mailSender;
+    private final SendGrid sendGrid;
 
-    @Value("${portfolio.owner.email}")
-    private String ownerEmail;
+    @Value("${sendgrid.verified.email}")
+    private String verifiedEmail;
+
+    @Value("${sendgrid.recipient.email}")
+    private String recipientEmail;
 
     public void processContactMessage(ContactRequest request) {
         // Save to database
@@ -43,28 +52,24 @@ public class ContactService {
     }
 
     private void sendNotificationEmail(ContactRequest request) {
-        SimpleMailMessage mail = new SimpleMailMessage();
-        mail.setTo(ownerEmail);
-        mail.setSubject("[Portfolio] New message from " + request.getName());
-        mail.setText(String.format("""
-                You have a new message from your portfolio!
-                
-                Name: %s
-                Email: %s
-                Subject: %s
-                
-                Message:
-                %s
-                
-                ---
-                Sent from your portfolio contact form.
-                """,
-                request.getName(),
-                request.getEmail(),
-                request.getSubject(),
-                request.getMessage()
-        ));
-        mailSender.send(mail);
-        log.info("Email notification sent for contact from: {}", request.getEmail());
+        Email from = new Email(verifiedEmail);
+        Email recipient = new Email(recipientEmail);
+
+        Content content = new Content("text/plain", request.getMessage());
+        Mail mail = new Mail(from, request.getSubject(), recipient, content);
+        mail.setReplyTo(new Email(request.getEmail()));
+        Request request1 = new Request();
+        try {
+            request1.setMethod(Method.POST);
+            request1.setEndpoint("mail/send");
+            request1.setBody(mail.build());
+
+            Response response = sendGrid.api(request1);
+
+            System.out.println("Status Code: " + response.getStatusCode());
+
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to send email", ex);
+        }
     }
 }
