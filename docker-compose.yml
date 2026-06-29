@@ -4,7 +4,7 @@ services:
     image: postgres:16
     restart: always
     environment:
-      POSTGRES_DB: portfolio_db
+      POSTGRES_DB: local-db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${DB_PASSWORD:-strongpassword}
     volumes:
@@ -28,7 +28,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5433/portfolio_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5433/local-db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-strongpassword}
       CORS_ALLOWED_ORIGINS: ${FRONTEND_URL:-http://localhost:4200}
