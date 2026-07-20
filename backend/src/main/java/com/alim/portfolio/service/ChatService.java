@@ -1,6 +1,8 @@
 package com.alim.portfolio.service;
 
 import com.alim.portfolio.dto.ChatRequest;
+import com.alim.portfolio.dto.GroqRequest;
+import com.alim.portfolio.dto.GroqResponse;
 import com.alim.portfolio.dto.OllamaResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -21,7 +22,7 @@ import java.util.Map;
 public class ChatService {
 
   @Value("${api.key}")
-  private String GROQ_API_KEY;
+  private String groqApiKey;
 
   @Value("${api.url}")
   private String apiUrl;
@@ -32,8 +33,12 @@ public class ChatService {
   @Value("${api.max-tokens}")
   private int maxTokens;
 
-  private final RestTemplate restTemplate = new RestTemplate();
-    private static final String SYSTEM_PROMPT = """
+  @Value("${api.temperature}")
+  private double temperature;
+
+  private final RestTemplate restTemplate;
+
+  private static final String SYSTEM_PROMPT = """
 You are Alim Uddin Asif, a Software Engineer based in Dhaka, Bangladesh.
 
 Speak in FIRST PERSON. Be friendly, confident, and professional.
@@ -90,56 +95,50 @@ If information is not provided, say you do not have the right to share this info
     try {
 
       HttpHeaders headers = new HttpHeaders();
-      headers.setContentType(MediaType.APPLICATION_JSON);
-      headers.setBearerAuth(GROQ_API_KEY);
+      headers.setContentType(MediaType.APPLICATION_JSON); // Set the content type to JSON
+      headers.setAccept(List.of(MediaType.APPLICATION_JSON)); // Set the accept type to JSON but here it is optional as groq returns json by default
+      headers.setBearerAuth(groqApiKey);
 
-      Map<String, Object> body = Map.of(
-          "model", model,
-          "messages", List.of(
-              Map.of("role", "system", "content", SYSTEM_PROMPT),
-              Map.of("role", "user", "content", request.getMessage())
-          ),
-          "temperature", 0.6,
-          "max_tokens", maxTokens
-      );
+      GroqRequest body = GroqRequest.builder()
+          .model(model)
+          .messages(List.of(
+              GroqRequest.Message.builder()
+                  .role("system")
+                  .content(SYSTEM_PROMPT)
+                  .build(),
+              GroqRequest.Message.builder()
+                  .role("user")
+                  .content(request.getMessage())
+                  .build()
+          ))
+          .temperature(temperature)
+          .maxTokens(maxTokens)
+          .build();
 
-      HttpEntity<Map<String, Object>> entity =
+      HttpEntity<GroqRequest> entity =
           new HttpEntity<>(body, headers);
 
-      ResponseEntity<Map> response =
+      ResponseEntity<GroqResponse> response =
           restTemplate.postForEntity(
               apiUrl,
               entity,
-              Map.class
+              GroqResponse.class
           );
 
       // Extract assistant message from Groq response
-      Map<String, Object> responseBody = response.getBody();
-      List<Map<String, Object>> choices =
-          (List<Map<String, Object>>) responseBody.get("choices");
-
-      Map<String, Object> message =
-          (Map<String, Object>) choices.get(0).get("message");
-
-      String content = (String) message.get("content");
+      GroqResponse responseBody = response.getBody();
+      String content = (responseBody != null) ? responseBody.getFirstMessageContent() : "No response from AI";
 
       // Convert to your existing OllamaResponse format
-      OllamaResponse ollamaResponse = new OllamaResponse();
-      ollamaResponse.setResponse(content);
-      ollamaResponse.setDone(true);
-
-      return ollamaResponse;
+      return new OllamaResponse(content, true);
 
     } catch (Exception e) {
       log.error("Error calling Groq API: {}", e.getMessage());
 
-      OllamaResponse errorResponse = new OllamaResponse();
-      errorResponse.setResponse(
-          "I'm having trouble connecting right now. Please try again in a moment!"
+      return new OllamaResponse(
+          "I'm having trouble connecting right now. Please try again in a moment!",
+          true
       );
-      errorResponse.setDone(true);
-
-      return errorResponse;
     }
   }
 }
