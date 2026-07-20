@@ -42,7 +42,7 @@
     <div class="chat-input-area">
       <div class="chat-input-wrap">
         <textarea id="chat-input" placeholder="Ask me about Alim's skills, projects, experience..." rows="1"
-          [value]="inputText" (input)="onInput($event)" (keydown)="handleChatKey($event)"></textarea>
+          [value]="inputText" (input)="onInput($event)" (keydown)="handleChatKey($event)" (focus)="onInputFocus()"></textarea>
         <button class="send-btn" (click)="sendMessage()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">

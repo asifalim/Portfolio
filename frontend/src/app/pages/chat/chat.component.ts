@@ -36,6 +36,17 @@ export class ChatComponent implements OnInit {
     el.style.height = Math.min(el.scrollHeight, 120) + 'px';
   }
 
+  onInputFocus() {
+    // On mobile, scroll input into view after keyboard opens
+    setTimeout(() => {
+      const inputArea = document.querySelector('.chat-input-area') as HTMLElement;
+      if (inputArea) {
+        inputArea.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+      this.scrollToBottom();
+    }, 300);
+  }
+
   handleChatKey(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
