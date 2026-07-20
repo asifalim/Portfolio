@@ -161,6 +161,10 @@ nav {
   display: block;
 }
 
+.page.active#chat-page {
+  display: flex;
+}
+
 /* ─── HERO ─── */
 #home {
   min-height: 100vh;
@@ -1044,10 +1048,13 @@ footer a {
 
 /* ─── CHAT PAGE ─── */
 #chat-page {
-  height: 100dvh;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   flex-direction: column;
-  padding-top: 64px;
   overflow: hidden;
 }
 
@@ -1249,7 +1256,7 @@ footer a {
   outline: none;
   color: var(--text);
   font-family: var(--font-body), serif;
-  font-size: 0.9rem;
+  font-size: 1rem; /* must be >= 16px to prevent iOS auto-zoom on focus */
   resize: none;
   max-height: 120px;
   line-height: 1.5;
