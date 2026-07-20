@@ -22,7 +22,7 @@ export class ChatComponent implements OnInit {
     "Are you open to work?"
   ];
 
-  constructor(private chatService: ChatService) { }
+  constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
     console.log('ai chat open');
