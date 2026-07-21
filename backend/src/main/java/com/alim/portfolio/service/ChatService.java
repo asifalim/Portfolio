@@ -7,6 +7,7 @@ import com.alim.portfolio.dto.OllamaResponse;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -51,6 +54,55 @@ public class ChatService {
   }
 
   private final RestTemplate restTemplate;
+  private final WebClient.Builder webClientBuilder;
+
+  public Flux<String> streamChat(ChatRequest request) {
+    GroqRequest body = GroqRequest.builder()
+        .model(model)
+        .messages(List.of(
+            GroqRequest.Message.builder()
+                .role("system")
+                .content(systemPrompt)
+                .build(),
+            GroqRequest.Message.builder()
+                .role("user")
+                .content(request.getMessage())
+                .build()
+        ))
+        .temperature(temperature)
+        .maxTokens(maxTokens)
+        .stream(true)
+        .build();
+
+    return webClientBuilder.build().post()
+        .uri(apiUrl)
+        .header(HttpHeaders.AUTHORIZATION, "Bearer " + groqApiKey)
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(body)
+        .retrieve()
+        .bodyToFlux(String.class)
+        .filter(line -> !line.trim().isEmpty() && !line.contains("[DONE]"))
+        .mapNotNull(line -> {
+            String json = line;
+            if (json.startsWith("data: ")) {
+                json = json.substring(6);
+            } else if (json.startsWith("data:")) {
+                json = json.substring(5);
+            }
+            try {
+                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                com.alim.portfolio.dto.GroqStreamResponse response = mapper.readValue(json, com.alim.portfolio.dto.GroqStreamResponse.class);
+                String token = response.getContent();
+                if (token == null || token.isEmpty()) return null;
+                // Wrap in a JSON object to avoid SSE serialization ambiguity (quotes, etc.)
+                return "{\"t\":" + mapper.writeValueAsString(token) + "}";
+            } catch (Exception e) {
+                log.error("Error parsing stream chunk: {}", e.getMessage());
+                return null;
+            }
+        })
+        .filter(Objects::nonNull);
+  }
 
   public OllamaResponse chat(ChatRequest request) {
     try {
