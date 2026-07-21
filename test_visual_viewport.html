@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+  <style>
+    body { margin: 0; padding: 0; }
+    #chat-page {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: lightblue;
+      display: flex;
+      flex-direction: column;
+    }
+    .messages { flex: 1; overflow-y: auto; }
+    .input-area { background: #eee; padding: 10px; }
+  </style>
+</head>
+<body>
+  <div style="height: 64px; background: #333; color: white;">Navbar</div>
+  <div id="chat-page">
+    <div class="messages">
+      <p>Message 1</p>
+      <p>Message 2</p>
+    </div>
+    <div class="input-area">
+      <input type="text" placeholder="Type..." style="width: 100%;">
+    </div>
+  </div>
+  <script>
+    function updateHeight() {
+      const chatPage = document.getElementById('chat-page');
+      if (window.visualViewport) {
+        chatPage.style.height = (window.visualViewport.height - 64) + 'px';
+        chatPage.style.top = Math.max(64, window.visualViewport.offsetTop + 64) + 'px';
+      } else {
+        chatPage.style.height = 'calc(100vh - 64px)';
+      }
+    }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateHeight);
+      window.visualViewport.addEventListener('scroll', updateHeight);
+    }
+    updateHeight();
+  </script>
+</body>
+</html>
