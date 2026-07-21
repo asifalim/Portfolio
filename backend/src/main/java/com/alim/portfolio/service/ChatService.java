@@ -3,6 +3,7 @@ package com.alim.portfolio.service;
 import com.alim.portfolio.dto.ChatRequest;
 import com.alim.portfolio.dto.GroqRequest;
 import com.alim.portfolio.dto.GroqResponse;
+import com.alim.portfolio.dto.GroqStreamResponse;
 import com.alim.portfolio.dto.OllamaResponse;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -55,6 +57,7 @@ public class ChatService {
 
   private final RestTemplate restTemplate;
   private final WebClient.Builder webClientBuilder;
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   public Flux<String> streamChat(ChatRequest request) {
     GroqRequest body = GroqRequest.builder()
@@ -90,12 +93,11 @@ public class ChatService {
                 json = json.substring(5);
             }
             try {
-                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                com.alim.portfolio.dto.GroqStreamResponse response = mapper.readValue(json, com.alim.portfolio.dto.GroqStreamResponse.class);
+                GroqStreamResponse response = objectMapper.readValue(json, GroqStreamResponse.class);
                 String token = response.getContent();
                 if (token == null || token.isEmpty()) return null;
                 // Wrap in a JSON object to avoid SSE serialization ambiguity (quotes, etc.)
-                return "{\"t\":" + mapper.writeValueAsString(token) + "}";
+                return "{\"t\":" + objectMapper.writeValueAsString(token) + "}";
             } catch (Exception e) {
                 log.error("Error parsing stream chunk: {}", e.getMessage());
                 return null;
