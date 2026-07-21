@@ -8,7 +8,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 @Slf4j
 @RestController
@@ -25,5 +27,13 @@ public class ChatController {
     public OllamaResponse chat(@Valid @RequestBody ChatRequest request) {
         log.debug("Chat request received: {}", request.getMessage());
       return chatService.chat(request);
+    }
+
+    @PostMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @Operation(summary = "Stream a message to Alim's AI Agent",
+               description = "Returns a stream of text chunks representing the AI response")
+    public Flux<String> streamChat(@Valid @RequestBody ChatRequest request) {
+        log.debug("Stream chat request received: {}", request.getMessage());
+        return chatService.streamChat(request);
     }
 }
