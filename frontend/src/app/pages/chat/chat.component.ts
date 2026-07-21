@@ -84,20 +84,52 @@ export class ChatComponent implements OnInit {
       content: m.content
     }));
 
-    this.chatService.sendMessage({ message, history }).subscribe({
-      next: (res) => {
+    const assistantMessage: ChatMessage = { role: 'assistant', content: '' };
+    let firstChunk = true;
+
+    const typingQueue: string[] = [];
+    let isTypingEffectRunning = false;
+
+    const processTypingQueue = () => {
+      if (typingQueue.length === 0) {
+        isTypingEffectRunning = false;
+        return;
+      }
+      isTypingEffectRunning = true;
+      assistantMessage.content += typingQueue.shift();
+      this.scrollToBottom();
+      setTimeout(processTypingQueue, 25); // 25ms per chunk for a natural reading speed
+    };
+
+    this.chatService.streamMessage({ message, history }, (chunk: string) => {
+      if (firstChunk) {
         this.isTyping = false;
-        if (res) {
-          this.messages.push({ role: 'assistant', content: res.response });
-        }
+        this.messages.push(assistantMessage);
+        firstChunk = false;
+      }
+      
+      // Groq is so fast it often sends everything in just a few bursts.
+      // We queue the chunks and render them at a natural speed.
+      typingQueue.push(chunk);
+      if (!isTypingEffectRunning) {
+        processTypingQueue();
+      }
+    }).then(() => {
+      this.isTyping = false;
+      if (firstChunk) {
+        this.messages.push({
+          role: 'assistant',
+          content: "Sorry, I couldn't generate a response. Please try again!"
+        });
         this.scrollToBottom();
-      },
-      error: () => {
-        this.isTyping = false;
+      }
+    }).catch(err => {
+      this.isTyping = false;
+      if (firstChunk) {
         this.messages.push({
           role: 'assistant',
           content: this.getFallback(message)
-        })
+        });
         this.scrollToBottom();
       }
     });

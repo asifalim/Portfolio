@@ -16,6 +16,7 @@ public class GroqRequest {
   private String model;
   private List<Message> messages;
   private double temperature;
+  private boolean stream;
 
   @JsonProperty("max_tokens")
   private int maxTokens;

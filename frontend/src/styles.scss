@@ -1125,6 +1125,7 @@ footer a {
   display: flex;
   gap: 0.75rem;
   animation: msgIn 0.3s ease forwards;
+  min-width: 0; // allow flex children to shrink and not overflow
 }
 
 @keyframes msgIn {
@@ -1168,10 +1169,15 @@ footer a {
 
 .msg-bubble {
   max-width: 70%;
+  min-width: 0;
   padding: 0.85rem 1.1rem;
   border-radius: 14px;
   font-size: 0.9rem;
   line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap; // preserve newlines from AI, wrap long words
 }
 
 .message.ai .msg-bubble {
