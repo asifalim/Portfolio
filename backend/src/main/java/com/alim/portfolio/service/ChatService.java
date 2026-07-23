@@ -8,6 +8,8 @@ import com.alim.portfolio.dto.OllamaResponse;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +24,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -59,19 +59,52 @@ public class ChatService {
   private final WebClient.Builder webClientBuilder;
   private final ObjectMapper objectMapper = new ObjectMapper();
 
+  // ─── Conversation History Builder ────────────────────────────────────────
+  // LLMs are stateless — every API call is independent and the model has no
+  // memory of prior calls. "Memory" is achieved by replaying the conversation
+  // history in each request: [system, turn1-user, turn1-assistant, ..., new-user].
+  //
+  // Windowing: we keep the last MAX_HISTORY_TURNS pairs to avoid exceeding the
+  // model's context window and to keep costs/latency reasonable.
+  private static final int MAX_HISTORY_TURNS = 10; // 10 pairs = 20 messages
+
+  private List<GroqRequest.Message> buildMessages(ChatRequest request) {
+    List<GroqRequest.Message> messages = new ArrayList<>();
+
+    // 1. System prompt always goes first — sets the AI's persona/instructions
+    messages.add(GroqRequest.Message.builder()
+        .role("system")
+        .content(systemPrompt)
+        .build());
+
+    // 2. Inject conversation history (if any) — this is what gives the AI memory
+    if (request.getHistory() != null && !request.getHistory().isEmpty()) {
+      List<ChatRequest.HistoryMessage> history = request.getHistory();
+
+      // Windowing: take only the last MAX_HISTORY_TURNS turns to limit context size.
+      // Each "turn" is one user message + one assistant reply = 2 messages.
+      int startIndex = Math.max(0, history.size() - (MAX_HISTORY_TURNS * 2));
+      history.subList(startIndex, history.size()).forEach(h ->
+          messages.add(GroqRequest.Message.builder()
+              .role(h.getRole())
+              .content(h.getContent())
+              .build())
+      );
+    }
+
+    // 3. The current user message goes last
+    messages.add(GroqRequest.Message.builder()
+        .role("user")
+        .content(request.getMessage())
+        .build());
+
+    return messages;
+  }
+
   public Flux<String> streamChat(ChatRequest request) {
     GroqRequest body = GroqRequest.builder()
         .model(model)
-        .messages(List.of(
-            GroqRequest.Message.builder()
-                .role("system")
-                .content(systemPrompt)
-                .build(),
-            GroqRequest.Message.builder()
-                .role("user")
-                .content(request.getMessage())
-                .build()
-        ))
+        .messages(buildMessages(request))  // ← full history + current message
         .temperature(temperature)
         .maxTokens(maxTokens)
         .stream(true)
@@ -116,16 +149,7 @@ public class ChatService {
 
       GroqRequest body = GroqRequest.builder()
           .model(model)
-          .messages(List.of(
-              GroqRequest.Message.builder()
-                  .role("system")
-                  .content(systemPrompt)
-                  .build(),
-              GroqRequest.Message.builder()
-                  .role("user")
-                  .content(request.getMessage())
-                  .build()
-          ))
+          .messages(buildMessages(request))  // ← full history + current message
           .temperature(temperature)
           .maxTokens(maxTokens)
           .build();
