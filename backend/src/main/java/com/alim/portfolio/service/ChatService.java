@@ -5,6 +5,8 @@ import com.alim.portfolio.dto.GroqRequest;
 import com.alim.portfolio.dto.GroqResponse;
 import com.alim.portfolio.dto.GroqStreamResponse;
 import com.alim.portfolio.dto.OllamaResponse;
+import com.alim.portfolio.rag.KnowledgeChunk;
+import com.alim.portfolio.rag.RagService;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -58,6 +60,7 @@ public class ChatService {
   private final RestTemplate restTemplate;
   private final WebClient.Builder webClientBuilder;
   private final ObjectMapper objectMapper = new ObjectMapper();
+  private final RagService ragService; // ← injected RAG service
 
   // ─── Conversation History Builder ────────────────────────────────────────
   // LLMs are stateless — every API call is independent and the model has no
@@ -67,14 +70,31 @@ public class ChatService {
   // Windowing: we keep the last MAX_HISTORY_TURNS pairs to avoid exceeding the
   // model's context window and to keep costs/latency reasonable.
   private static final int MAX_HISTORY_TURNS = 10; // 10 pairs = 20 messages
+  private static final int RAG_TOP_K = 3;          // retrieve top 3 most relevant chunks
 
   private List<GroqRequest.Message> buildMessages(ChatRequest request) {
     List<GroqRequest.Message> messages = new ArrayList<>();
 
-    // 1. System prompt always goes first — sets the AI's persona/instructions
+    // ─── RAG: Retrieve relevant context ──────────────────────────────────────
+    // This is the core of RAG. Instead of always sending the full system prompt,
+    // we dynamically find which parts of Alim's knowledge are relevant to THIS
+    // specific question and inject only those parts.
+    //
+    // Flow:
+    //   1. Embed the user's question → query vector
+    //   2. Compare against all chunk vectors → cosine similarity scores
+    //   3. Take the top-K highest scoring chunks
+    //   4. Append them to the system prompt as "Relevant Context"
+    List<KnowledgeChunk> relevantChunks = ragService.retrieve(request.getMessage(), RAG_TOP_K);
+    String ragContext = ragService.buildContext(relevantChunks);
+
+    log.debug("RAG: retrieved {} chunks for query: '{}'", relevantChunks.size(), request.getMessage());
+
+    // 1. System prompt + RAG context — the model now has both its persona
+    //    instructions AND the specific facts it needs to answer this question
     messages.add(GroqRequest.Message.builder()
         .role("system")
-        .content(systemPrompt)
+        .content(systemPrompt + ragContext)
         .build());
 
     // 2. Inject conversation history (if any) — this is what gives the AI memory
